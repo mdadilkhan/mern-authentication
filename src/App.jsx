@@ -7,7 +7,7 @@ function App() {
 
   return (
     <>
-      <div className=''>Mern Auth</div>
+      <div className=''>Mern Auth hello</div>
     </>
   )
 }
