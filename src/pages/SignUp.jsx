@@ -2,6 +2,8 @@ import {useState} from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { URL } from "../../config";
 import axios from "axios";
+
+
 const SignUp = () => {
   const [formData, setFormData] = useState({});
   const [error, setError] = useState(false);
