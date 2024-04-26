@@ -1,28 +1,111 @@
-import React from "react";
-
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { URL } from "../../config";
 const Home = () => {
+  const navigate = useNavigate();
+  const [allRooms, setAllRooms] = useState([]);
+  const [allHotel,setAllHotel]=useState([])
+  
+  const getAllRooms = () => {
+    axios
+      .get(`${URL}/user/getAllRooms`)
+      .then((res) => {
+        // console.log(res.data.students);
+        setAllRooms(res.data.students);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  useEffect(() => {
+    getAllRooms();
+  },[]);
+
+
+
+
+
+
+  const getAllHotel = () => {
+    axios.get(`${URL}/user/getAllHotel`)
+      .then((res) => {
+        console.log(res.data);
+        setAllHotel(res.data.hotels);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+  
+  useEffect(() => {
+    getAllHotel();
+  },[]);
+  console.log(allHotel);
   return (
-    <div className="px-4 py-12 max-w-2xl mx-auto">
-      <h1 className="text-3xl font-bold  mb-4 text-slate-800">
-        Welcome to my Auth App!
-      </h1>
-      <p className="mb-4 text-slate-700">
-        This is a full-stack web application built with the MERN (MongoDB,
-        Express, React, Node.js) stack. It includes authentication features that
-        allow users to sign up, log in, and log out, and provides access to
-        protected routes only for authenticated users.
-      </p>
-      <p className="mb-4 text-slate-700">
-        The front-end of the application is built with React and uses React
-        Router for client-side routing. The back-end is built with Node.js and
-        Express, and uses MongoDB as the database. Authentication is implemented
-        using JSON Web Tokens (JWT).
-      </p>
-      <p className="mb-4 text-slate-700">
-        This application is intended as a starting point for building full-stack
-        web applications with authentication using the MERN stack. Feel free to
-        use it as a template for your own projects!
-      </p>
+    <div>
+      <div className="mx-auto max-w-2xl px-4 py-10 sm:px-6 sm:py-10 lg:max-w-7xl lg:px-8">
+        <h2 className="text-2xl font-bold tracking-tight text-gray-900">
+          Available Rooms
+        </h2>
+
+        <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
+          {allRooms.slice(0, 4).map((product) => (
+            <div
+              key={product.id}
+              className="group relative"
+              onClick={() => {
+                navigate(`/roomdetials/${product._id}`);
+              }}
+            >
+              <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
+                <img
+                  src={product.filename}
+                  alt={product.imageAlt}
+                  className="h-full w-full object-cover object-center lg:h-full lg:w-full"
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+
+      <div className="flex justify-center">
+        <button onClick={()=>{navigate('/room')}} className="bg-slate-700 text-white p-3 rounded-lg hover:opacity-95 disabled:opacity-80">View All</button>
+      </div>
+
+
+
+      <div className="mx-auto max-w-2xl px-4 py-10 sm:px-6 sm:py-10 lg:max-w-7xl lg:px-8">
+        <h2 className="text-2xl font-bold tracking-tight text-gray-900">
+          Nearby Hotel
+        </h2>
+
+        <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
+          {allHotel.slice(0, 4).map((product) => (
+            <div
+              key={product.id}
+              className="group relative"
+              onClick={() => {
+                navigate(`/hoteldetials/${product._id}`);
+              }}
+            >
+              <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
+                <img
+                  src={product.filename}
+                  alt={product.imageAlt}
+                  className="h-full w-full object-cover object-center lg:h-full lg:w-full"
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="flex justify-center">
+        <button onClick={()=>{navigate('/hotel')}} className="bg-slate-700 text-white p-3 rounded-lg hover:opacity-95 disabled:opacity-80">View All</button>
+      </div>
     </div>
   );
 };

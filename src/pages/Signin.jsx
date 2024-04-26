@@ -4,7 +4,7 @@ import { URL } from '../../config';
 import { signInStart,signInSuccess,signInFailure } from '../redux/slices/userSlice';
 import { useDispatch,useSelector } from 'react-redux';
 import OAuth from '../components/OAuth';
-
+import axios from 'axios'
 const Signin = () => {
   const [formData, setFormData] = useState({});
   const {loading,error,currentUser} =useSelector((state)=>state.user);
@@ -20,22 +20,18 @@ const Signin = () => {
     try {
       
       dispatch(signInStart())
-      const res = await fetch(`${URL}/auth/signin`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-      const data = await res.json();
-      console.log(data);
+      axios.post(`${URL}/auth/signin`,formData).then((res)=>{
       
-      if (data.success === false) {
-         dispatch(signInFailure(data))
-        return;
-      }
-      dispatch(signInSuccess(data))
-      navigate("/");
+         if(res.status===200){
+          console.log(res);
+          dispatch(signInSuccess(res.data))
+          navigate("/");
+         }else{
+          dispatch(signInFailure(res.data))
+          return
+         }
+      })
+   
     } catch (error) {
       dispatch(signInFailure(error))
     }
